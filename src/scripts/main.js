@@ -2,6 +2,10 @@
 
 const table = document.getElementsByTagName('table')[0];
 
+function convertToNumber(currencyString) {
+  return Number(currencyString.replace('$', '').replace(/,/g, ''));
+}
+
 table.addEventListener('click', function (e) {
   if (e.target.tagName !== 'TH') {
     return;
@@ -16,8 +20,14 @@ table.addEventListener('click', function (e) {
   const i = Array.from(e.target.parentElement.cells).indexOf(e.target);
 
   const sortedRows = rows.sort((x, y) => {
-    if (!isNaN(x.cells[i].textContent) && !isNaN(y.cells[i].textContent)) {
-      return parseFloat(x.cells[i].textContent) - parseFloat(y.cells[i].textContent);
+    if (
+      !isNaN(convertToNumber(x.cells[i].textContent)) &&
+      !isNaN(convertToNumber(y.cells[i].textContent))
+    ) {
+      return (
+        convertToNumber(x.cells[i].textContent) -
+        convertToNumber(y.cells[i].textContent)
+      );
     }
 
     return x.cells[i].textContent.localeCompare(y.cells[i].textContent);
@@ -25,6 +35,4 @@ table.addEventListener('click', function (e) {
 
   tbody.innerHTML = '';
   tbody.append(...sortedRows);
-
-  console.log(rows[rows.length - 1])
 });
